@@ -6,17 +6,24 @@
  * @param {string} name
  * @param {Format} format
  * @param {boolean} saveAs
+ * @param {string} conflictAction
  */
 export default async function saveToFile(
   text,
   name,
   { ext, mimeType },
   saveAs = false,
+  conflictAction = 'overwrite',
 ) {
   const blob = new Blob([text], { type: mimeType });
   const filename = name + ext;
   const url = URL.createObjectURL(blob);
-  const id = await chrome.downloads.download({ url, filename, saveAs });
+  const id = await chrome.downloads.download({
+    url,
+    filename,
+    saveAs,
+    conflictAction
+  });
 
   /** @param {chrome.downloads.DownloadDelta} delta  */
   const onChange = (delta) => {
